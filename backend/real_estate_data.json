@@ -1,0 +1,37 @@
+{
+    "listings": [
+        {
+            "id": 1,
+            "title": "Modern Downtown Apartment",
+            "price": 450000,
+            "location": "Downtown",
+            "bedrooms": 2,
+            "bathrooms": 2,
+            "square_feet": 1200,
+            "description": "Beautiful modern apartment with floor-to-ceiling windows and city views",
+            "amenities": ["gym", "parking", "security", "rooftop garden"]
+        },
+        {
+            "id": 2,
+            "title": "Suburban Family Home",
+            "price": 750000,
+            "location": "Suburbs",
+            "bedrooms": 4,
+            "bathrooms": 3,
+            "square_feet": 2500,
+            "description": "Spacious family home with large backyard and modern kitchen",
+            "amenities": ["garage", "garden", "playground", "storage"]
+        },
+        {
+            "id": 3,
+            "title": "Luxury Penthouse",
+            "price": 1200000,
+            "location": "Uptown",
+            "bedrooms": 3,
+            "bathrooms": 3.5,
+            "square_feet": 3000,
+            "description": "Stunning penthouse with panoramic city views and private terrace",
+            "amenities": ["elevator", "concierge", "private parking", "wine cellar"]
+        }
+    ]
+} 
