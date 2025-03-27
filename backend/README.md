@@ -9,7 +9,7 @@ Below is a curl example:
 bash
 Copy
 Edit
-curl -X POST http://127.0.0.1:5000/chat \
+curl -X POST http://127.0.0.1:5001/chat \
 -H "Content-Type: application/json" \
 -d '{
   "prompt": "Find me a 2-bedroom apartment under $3000."
