@@ -3,29 +3,23 @@ import json
 import os
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify
-from flask_cors import CORS
 
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 app = Flask(__name__)
-CORS(app)
 
 with open("real_estate_data.json", "r") as file:
     real_estate_listings = json.load(file)
 
-def generate_recommendation(user_prompt):
-    system_prompt = (
-        "You are a helpful real estate assistant. Based on the user's request, "
-        "provide suitable housing recommendations from the following listings:\n"
-        f"{json.dumps(real_estate_listings, indent=2)}"
-    )
+def generate_recommendation(prompt):
+    system_prompt = f"You are a real estate assistant. Based on the user's request, provide suitable housing recommendations from the following listings:\n{json.dumps(real_estate_listings, indent=2)}"
 
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt}
+            {"role": "user", "content": prompt}
         ],
         max_tokens=400,
         temperature=0.7,
@@ -42,11 +36,6 @@ def chat():
     recommendations = generate_recommendation(user_prompt)
     return jsonify({"recommendations": recommendations})
 
-@app.route("/")
-def home():
-    return "Backend running fine!"
-
 if __name__ == "__main__":
-    app.run(debug=True)
-
+    app.run(host="127.0.0.1", port=8000, debug=True)
 
