@@ -9,33 +9,50 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 
 app = Flask(__name__)
 
-with open("real_estate_data.json", "r") as file:
-    real_estate_listings = json.load(file)
+conversations = {}
 
-def generate_recommendation(prompt):
-    system_prompt = f"You are a real estate assistant. Based on the user's request, provide suitable housing recommendations from the following listings:\n{json.dumps(real_estate_listings, indent=2)}"
-
+def generate_recommendation(messages):
+    """
+    `messages` is a list of dicts:
+      [
+        {"role": "system", "content": "..."},
+        {"role": "user", "content": "..."},
+        {"role": "assistant", "content": "..."},
+        ...
+      ]
+    """
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": prompt}
-        ],
+        messages=messages,
         max_tokens=400,
         temperature=0.7,
     )
-
     return response.choices[0].message.content.strip()
 
 @app.route("/chat", methods=["POST"])
 def chat():
-    user_prompt = request.json.get("prompt")
+    data = request.json
+    conversation_id = data.get("conversation_id", "default")  
+    user_prompt = data.get("prompt")
+
     if not user_prompt:
         return jsonify({"error": "Please provide a prompt."}), 400
 
-    recommendations = generate_recommendation(user_prompt)
-    return jsonify({"recommendations": recommendations})
+    if conversation_id not in conversations:
+        conversations[conversation_id] = [
+            {"role": "system", "content": "You are a helpful real estate assistant."}
+        ]
+
+    conversations[conversation_id].append({"role": "user", "content": user_prompt})
+
+    model_response = generate_recommendation(conversations[conversation_id])
+
+    conversations[conversation_id].append({"role": "assistant", "content": model_response})
+
+    return jsonify({
+        "conversation_id": conversation_id,
+        "response": model_response
+    })
 
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=8000, debug=True)
-
+    app.run(host="127.0.0.1", port=5001, debug=True)
